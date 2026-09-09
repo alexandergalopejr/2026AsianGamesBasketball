@@ -110,6 +110,13 @@
             text-align: center;
             word-break: break-word;
         }
+        .flag {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 32px;
+        }
+        /* Forces ALL image flags to render identically across computers and mobiles */
         .flag img {
             width: 36px !important;
             height: 24px !important;
@@ -150,29 +157,29 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbzQujm_u1LuS3PRWTR3Oj6PabftmLW3xL2_LhixiSsYRB_KN3sP7RQ4pZrqCNBszBLD/exec?callback=handleScores";; 
 
         const teamAssets = {
-            "chinese taipei": { 
-    flag: '<img src="./taipei.svg" alt="TPE" style="width:36px; height:24px; object-fit:contain; border-radius:3px;" onerror="this.src=\'https://iconify.design\'">', 
-    color: "#2d68c4" 
-},
-"taip": { 
-    flag: '<img src="./taipei.svg" alt="TPE" style="width:36px; height:24px; object-fit:contain; border-radius:3px;" onerror="this.src=\'https://iconify.design\'">', 
-    color: "#2d68c4" 
-},
-            "saudi arabia": { flag: "🇸🇦", color: "#006c35" },
-            "south korea": { flag: "🇰🇷", color: "#003472" },
-            "kazakhstan": { flag: "🇰🇿", color: "#00afca" },
-            "phil": { flag: "🇵🇭", color: "#0038a8" }, 
-            "japa": { flag: "🇯🇵", color: "#bc002d" },
-            "china": { flag: "🇨🇳", color: "#ee1c25" },
-            "chin": { flag: "🇨🇳", color: "#ee1c25" },
-            "kor": { flag: "🇰🇷", color: "#003472" },
-            "iran": { flag: "🇮🇷", color: "#239f40" },
-            "bahr": { flag: "🇧🇭", color: "#ce1126" },
-            "qata": { flag: "🇶🇦", color: "#8a1538" },
-            "jord": { flag: "🇯🇴", color: "#1a1a1a" },
-            "saud": { flag: "🇸🇦", color: "#006c35" },
-            "indo": { flag: "🇮🇩", color: "#ff0000" },
-            "kaza": { flag: "🇰🇿", color: "#00afca" }
+            "chinese taipei": { flag: '<img src="./taipei.svg" alt="TPE">', color: "#2d68c4" },
+            "taip": { flag: '<img src="./taipei.svg" alt="TPE">', color: "#2d68c4" },
+            "philippines": { flag: '<img src="https://iconify.design" alt="PH">', color: "#0038a8" }, 
+            "phil": { flag: '<img src="https://iconify.design" alt="PH">', color: "#0038a8" }, 
+            "japan": { flag: '<img src="https://iconify.design" alt="JP">', color: "#bc002d" },
+            "japa": { flag: '<img src="https://iconify.design" alt="JP">', color: "#bc002d" },
+            "china": { flag: '<img src="https://iconify.design" alt="CN">', color: "#ee1c25" },
+            "chin": { flag: '<img src="https://iconify.design" alt="CN">', color: "#ee1c25" },
+            "south korea": { flag: '<img src="https://iconify.design" alt="KR">', color: "#003472" },
+            "kor": { flag: '<img src="https://iconify.design" alt="KR">', color: "#003472" },
+            "iran": { flag: '<img src="https://iconify.design" alt="IR">', color: "#239f40" },
+            "bahrain": { flag: '<img src="https://iconify.design" alt="BH">', color: "#ce1126" },
+            "bahr": { flag: '<img src="https://iconify.design" alt="BH">', color: "#ce1126" },
+            "qatar": { flag: '<img src="https://iconify.design" alt="QA">', color: "#8a1538" },
+            "qata": { flag: '<img src="https://iconify.design" alt="QA">', color: "#8a1538" },
+            "jordan": { flag: '<img src="https://iconify.design" alt="JO">', color: "#1a1a1a" },
+            "jord": { flag: '<img src="https://iconify.design" alt="JO">', color: "#1a1a1a" },
+            "saudi arabia": { flag: '<img src="https://iconify.design" alt="SA">', color: "#006c35" },
+            "saud": { flag: '<img src="https://iconify.design" alt="SA">', color: "#006c35" },
+            "indonesia": { flag: '<img src="https://iconify.design" alt="ID">', color: "#ff0000" },
+            "indo": { flag: '<img src="https://iconify.design" alt="ID">', color: "#ff0000" },
+            "kazakhstan": { flag: '<img src="https://iconify.design" alt="KZ">', color: "#00afca" },
+            "kaza": { flag: '<img src="https://iconify.design" alt="KZ">', color: "#00afca" }
         };
 
         function getTeamData(rawTeamName) {
