@@ -45,7 +45,6 @@
             position: relative;
             overflow: hidden;
         }
-        /* Left team accent bar */
         .match-card::before {
             content: '';
             position: absolute;
@@ -55,7 +54,6 @@
             width: 6px;
             background-color: var(--team-a-color, #64748b);
         }
-        /* Right team accent bar */
         .match-card::after {
             content: '';
             position: absolute;
@@ -141,35 +139,29 @@
     </div>
 
     <script>
-        // 1. Google Script URL Feed
-        const API_URL = "https://script.google.com/macros/s/AKfycbzQujm_u1LuS3PRWTR3Oj6PabftmLW3xL2_LhixiSsYRB_KN3sP7RQ4pZrqCNBszBLD/exec?callback=handleScores"; 
+        const API_URL = "https://google.com"; 
 
-        // 2. Base clean assets dictionary
         const teamAssets = {
-            "philippines": { flag: "🇵🇭", color: "#0038a8" }, 
-            "japan": { flag: "🇯🇵", color: "#bc002d" },
-            "china": { flag: "🇨🇳", color: "#ee1c25" },
-            "south korea": { flag: "🇰🇷", color: "#003472" },
+            "phil": { flag: "🇵🇭", color: "#0038a8" }, 
+            "japa": { flag: "🇯🇵", color: "#bc002d" },
+            "chin": { flag: "🇨🇳", color: "#ee1c25" },
+            "kor": { flag: "🇰🇷", color: "#003472" },
             "iran": { flag: "🇮🇷", color: "#239f40" },
-            "bahrain": { flag: "🇧🇭", color: "#ce1126" },
-            "qatar": { flag: "🇶🇦", color: "#8a1538" },
-            "jordan": { flag: "🇯🇴", color: "#1a1a1a" },
-            "chinese taipei": { flag: "🇹🇼", color: "#2d68c4" },
-            "saudi arabia": { flag: "🇸🇦", color: "#006c35" },
-            "indonesia": { flag: "🇮🇩", color: "#ff0000" },
-            "kazakhstan": { flag: "🇰🇿", color: "#00afca" }
+            "bahr": { flag: "🇧🇭", color: "#ce1126" },
+            "qata": { flag: "🇶🇦", color: "#8a1538" },
+            "jord": { flag: "🇯🇴", color: "#1a1a1a" },
+            "taip": { flag: "🇹🇼", color: "#2d68c4" },
+            "saud": { flag: "🇸🇦", color: "#006c35" },
+            "indo": { flag: "🇮🇩", color: "#ff0000" },
+            "kaza": { flag: "🇰🇿", color: "#00afca" }
         };
 
-        // Advanced scanning helper function
         function getTeamData(rawTeamName) {
             if (!rawTeamName) return { flag: "🏳️", color: "#64748b" };
+            const cleaned = String(rawTeamName).toLowerCase().replace(/[\s\u00A0]+/g, ' ').trim();
             
-            // Clean spaces and lowercase everything
-            const cleaned = rawTeamName.replace(/\u00A0/g, ' ').toLowerCase().trim();
-            
-            // Look for any keyword inside the string
             for (const key in teamAssets) {
-                if (cleaned.includes(key)) {
+                if (cleaned.indexOf(key) !== -1) {
                     return teamAssets[key];
                 }
             }
@@ -186,7 +178,6 @@
                 const card = document.createElement('div');
                 card.className = 'match-card';
                 
-                // Use smart extraction engine to grab accurate flag details
                 const teamAInfo = getTeamData(match.Team_A);
                 const teamBInfo = getTeamData(match.Team_B);
 
