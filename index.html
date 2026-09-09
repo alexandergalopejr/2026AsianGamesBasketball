@@ -116,6 +116,7 @@
             justify-content: center;
             height: 32px;
         }
+        /* Strict global rules keeping all flag graphics identical */
         .flag img {
             width: 36px !important;
             height: 24px !important;
@@ -155,25 +156,85 @@
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbzQujm_u1LuS3PRWTR3Oj6PabftmLW3xL2_LhixiSsYRB_KN3sP7RQ4pZrqCNBszBLD/exec?callback=handleScores";; 
 
-        // Embedded base64 vector structures to bypass external network dependencies completely
+        // Uses Flagpack's open source cdn mapping alongside your local repository plum blossom graphic file
         const teamAssets = {
             "chinese taipei": { flag: '<img src="./taipei.svg" alt="TPE">', color: "#2d68c4" },
             "taip": { flag: '<img src="./taipei.svg" alt="TPE">', color: "#2d68c4" },
-            "philippines": { flag: '<img src="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 36 36\'><path fill=\'%230038A8\' d=\'M0 0h36v18H0z\'/><path fill=\'%23CE1126\' d=\'M0 18h36v18H0z\'/><path fill=\'%23FFF\' d=\'M0 0l18 18L0 36z\'/><circle fill=\'%23FCD116\' cx=\'6\' cy=\'18\' r=\'3\'/><path fill=\'%23FCD116\' d=\'M6 11l.5 2.5h2.5l-2 1.5.5 2.5-1.5-1.5-1.5 1.5.5-2.5-2-1.5h2.5zm0 9l.5 2.5h2.5l-2 1.5.5 2.5-1.5-1.5-1.5 1.5.5-2.5-2-1.5h2.5z\'/></svg>" alt="PH">', color: "#0038a8" }, 
-            "phil": { flag: '<img src="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 36 36\'><path fill=\'%230038A8\' d=\'M0 0h36v18H0z\'/><path fill=\'%23CE1126\' d=\'M0 18h36v18H0z\'/><path fill=\'%23FFF\' d=\'M0 0l18 18L0 36z\'/><circle fill=\'%23FCD116\' cx=\'6\' cy=\'18\' r=\'3\'/><path fill=\'%23FCD116\' d=\'M6 11l.5 2.5h2.5l-2 1.5.5 2.5-1.5-1.5-1.5 1.5.5-2.5-2-1.5h2.5zm0 9l.5 2.5h2.5l-2 1.5.5 2.5-1.5-1.5-1.5 1.5.5-2.5-2-1.5h2.5z\'/></svg>" alt="PH">', color: "#0038a8" }, 
-            "japan": { flag: '<img src="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 36 36\'><path fill=\'%23FFF\' d=\'M0 0h36v36H0z\'/><circle fill=\'%23BC002D\' cx=\'18\' cy=\'18\' r=\'8\'/></svg>" alt="JP">', color: "#bc002d" },
-            "japa": { flag: '<img src="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 36 36\'><path fill=\'%23FFF\' d=\'M0 0h36v36H0z\'/><circle fill=\'%23BC002D\' cx=\'18\' cy=\'18\' r=\'8\'/></svg>" alt="JP">', color: "#bc002d" },
-            "china": { flag: '<img src="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 36 36\'><path fill=\'%23DE2110\' d=\'M0 0h36v36H0z\'/><path fill=\'%23FFDE00\' d=\primeM6 10l1-3 1 3h3l-2.5 2 1 3-2.5-2-2.5 2 1-3-2.5-2h3zm5-5l1 1-.5 1.5-.5-1.5-1-1 1.5-.5z\'/></svg>" alt="CN">', color: "#ee1c25" },
-            "chin": { flag: '<img src="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 36 36\'><path fill=\'%23DE2110\' d=\'M0 0h36v36H0z\'/><path fill=\'%23FFDE00\' d=\primeM6 10l1-3 1 3h3l-2.5 2 1 3-2.5-2-2.5 2 1-3-2.5-2h3zm5-5l1 1-.5 1.5-.5-1.5-1-1 1.5-.5z\'/></svg>" alt="CN">', color: "#ee1c25" },
-            "south korea": { flag: '<img src="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 36 36\'><path fill=\'%23FFF\' d=\'M0 0h36v36H0z\'/><circle fill=\'%23CD2E3A\' cx=\'18\' cy=\'18\' r=\'6\'/><path fill=\'%230047A0\' d=\'M18 24a6 6 0 0 0 0-12c-3 0-3 6-6 6s-3 6-6 6z\'/></svg>" alt="KR">', color: "#003472" },
-            "kor": { flag: '<img src="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 36 36\'><path fill=\'%23FFF\' d=\'M0 0h36v36H0z\'/><circle fill=\'%23CD2E3A\' cx=\'18\' cy=\'18\' r=\'6\'/><path fill=\'%230047A0\' d=\'M18 24a6 6 0 0 0 0-12c-3 0-3 6-6 6s-3 6-6 6z\'/></svg>" alt="KR">', color: "#003472" },
-            "iran": { flag: '<img src="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 36 36\'><path fill=\'%23239F40\' d=\'M0 0h36v12H0z\'/><path fill=\'%23FFF\' d=\'M0 12h36v12H0z\'/><path fill=\'%23DA251D\' d=\primeM0 24h36v12H0z\'/><circle fill=\'%23DA251D\' cx=\'18\' cy=\'18\' r=\'3\'/></svg>" alt="IR">', color: "#239f40" },
-            "bahrain": { flag: '<img src="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 36 36\'><path fill=\'%23CE1126\' d=\'M0 0h36v36H0z\'/><path fill=\'%23FFF\' d=\'M0 0h9l4 4.5-4 4.5 4 4.5-4 4.5 4 4.5-4 4.5 4 4.5-4 4.5H0z\'/></svg>" alt="BH">', color: "#ce1126" },
-            "bahr": { flag: '<img src="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 36 36\'><path fill=\'%23CE1126\' d=\'M0 0h36v36H0z\'/><path fill=\'%23FFF\' d=\'M0 0h9l4 4.5-4 4.5 4 4.5-4 4.5 4 4.5-4 4.5 4 4.5-4 4.5H0z\'/></svg>" alt="BH">', color: "#ce1126" },
-            "qatar": { flag: '<img src="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 36 36\'><path fill=\'%238A1538\' d=\'M0 0h36v36H0z\'/><path fill=\'%23FFF\' d=\'M0 0h8l5 2-5 2 5 2-5 2 5 2-5 2 5 2-5 2 5 2-5 2 5 2-5 2 5 2-5 2H0z\'/></svg>" alt="QA">', color: "#8a1538" },
-            "qata": { flag: '<img src="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 36 36\'><path fill=\'%238A1538\' d=\'M0 0h36v36H0z\'/><path fill=\'%23FFF\' d=\'M0 0h8l5 2-5 2 5 2-5 2 5 2-5 2 5 2-5 2 5 2-5 2 5 2-5 2 5 2-5 2H0z\'/></svg>" alt="QA">', color: "#8a1538" },
-            "jordan": { flag: '<img src="data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\ '0 0 36 36\'><path fill=\'%23000\' d=\'M0 0h36v12H0z\'/><path fill=\'%23138F3E\' d=\'M0 12h36v12H0z\'/><path fill=\'%23FFF\' d=\'M0 24h36v12H0z\'/><path fill=\'%23CE1126\' d=\'M0 0l18 18L0 36z\'/><polygon fill=\'%23FFF\' points=\'5,18 6,16 8,17 7,19 8,20 6,19 5,21\'/></svg>" alt="JO">', color: "#1a1a1a" },
-           "jord": { flag: '', color: "#1a1a1a" },"saudi arabia": { flag: '', color: "#006c35" },"saud": { flag: '', color: "#006c35" },"indonesia": { flag: '', color: "#ff0000" },"indo": { flag: '', color: "#ff0000" },"kazakhstan": { flag: '', color: "#00afca" },"kaza": { flag: '', color: "#00afca" }};function getTeamData(rawTeamName) {if (!rawTeamName) return { flag: "🏳️", color: "#64748b" };const cleaned = String(rawTeamName).toLowerCase().replace(/[\s\u00A0]+/g, ' ').trim();for (const key in teamAssets) {if (cleaned.indexOf(key) !== -1) {return teamAssets[key];}}return { flag: "🏳️", color: "#64748b" };}function handleScores(matches) {const container = document.getElementById('container');container.innerHTML = '';matches.forEach(match => {if (!match.Team_A || !match.Team_B) return;const card = document.createElement('div');card.className = 'match-card';const teamAInfo = getTeamData(match.Team_A);const teamBInfo = getTeamData(match.Team_B);card.style.setProperty('--team-a-color', teamAInfo.color);card.style.setProperty('--team-b-color', teamBInfo.color);const quarter = match.Quarter || "UPCOMING";const time = match.Time_Remaining || "--:--";const scoreA = match.Score_A !== "" ? match.Score_A : "0";const scoreB = match.Score_B !== "" ? match.Score_B : "0";const isLive = ["q1", "q2", "q3", "q4", "ot", "halftime"].includes(quarter.toLowerCase());const statusHTML = isLive? <div class="live-pulse"><span class="pulse-dot"></span>LIVE - ${quarter}</div>: <span>${quarter}</span>;card.innerHTML = <div class="status-bar"> ${statusHTML} <span>⏱️ ${time}</span> </div> <div class="scoreboard"> <div class="team"> <span class="flag">${teamAInfo.flag}</span> <div class="team-name">${match.Team_A}</div> </div> <div class="scores"> <span>${scoreA}</span> <span class="divider">-</span> <span>${scoreB}</span> </div> <div class="team"> <span class="flag">${teamBInfo.flag}</span> <div class="team-name">${match.Team_B}</div> </div> </div>;container.appendChild(card);});}function refreshData() {const oldScript = document.getElementById('jsonp-trigger');if (oldScript) oldScript.remove();const script = document.createElement('script');script.src = API_URL + "&ts=" + new Date().getTime();script.id = 'jsonp-trigger';document.body.appendChild(script);}refreshData();setInterval(refreshData, 5000);
-    </script>
+            "philippines": { flag: '<img src="https://github.io" alt="PH">', color: "#0038a8" }, 
+            "phil": { flag: '<img src="https://github.io" alt="PH">', color: "#0038a8" }, 
+            "japan": { flag: '<img src="https://github.io" alt="JP">', color: "#bc002d" },
+            "japa": { flag: '<img src="https://github.io" alt="JP">', color: "#bc002d" },
+            "china": { flag: '<img src="https://github.io" alt="CN">', color: "#ee1c25" },
+            "chin": { flag: '<img src="https://github.io" alt="CN">', color: "#ee1c25" },
+            "south korea": { flag: '<img src="https://github.io" alt="KR">', color: "#003472" },
+            "kor": { flag: '<img src="https://github.io" alt="KR">', color: "#003472" },
+            "iran": { flag: '<img src="https://github.io" alt="IR">', color: "#239f40" },
+            "bahrain": { flag: '<img src="https://github.io" alt="BH">', color: "#ce1126" },
+            "bahr": { flag: '<img src="https://github.io" alt="BH">', color: "#ce1126" },
+            "qatar": { flag: '<img src="https://github.io" alt="QA">', color: "#8a1538" },
+            "qata": { flag: '<img src="https://github.io" alt="QA">', color: "#8a1538" },
+            "jordan": { flag: '<img src="https://github.io" alt="JO">', color: "#1a1a1a" },
+            "jord": { flag: '<img src="https://github.io" alt="JO">', color: "#1a1a1a" },
+            "saudi arabia": { flag: '<img src="https://github.io" alt="SA">', color: "#006c35" },
+            "saud": { flag: '<img src="https://github.io" alt="SA">', color: "#006c35" },
+            "indonesia": { flag: '<img src="https://github.io" alt="ID">', color: "#ff0000" },
+            "indo": { flag: '<img src="https://github.io" alt="ID">', color: "#ff0000" },
+            "kazakhstan": { flag: '<img src="https://github.io" alt="KZ">', color: "#00afca" },
+            "kaza": { flag: '<img src="https://github.io" alt="KZ">', color: "#00afca" }
+        };
+
+        function getTeamData(rawTeamName) {
+            if (!rawTeamName) return { flag: "🏳️", color: "#64748b" };
+            const cleaned = String(rawTeamName).toLowerCase().replace(/[\s\u00A0]+/g, ' ').trim();
+            
+            for (const key in teamAssets) {
+                if (cleaned.indexOf(key) !== -1) {
+                    return teamAssets[key];
+                }
+            }
+            return { flag: "🏳️", color: "#64748b" };
+        }
+
+        function handleScores(matches) {
+            const container = document.getElementById('container');
+            container.innerHTML = ''; 
+
+            matches.forEach(match => {
+                if (!match.Team_A || !match.Team_B) return;
+
+                const card = document.createElement('div');
+                card.className = 'match-card';
+                
+                const teamAInfo = getTeamData(match.Team_A);
+                const teamBInfo = getTeamData(match.Team_B);
+
+                card.style.setProperty('--team-a-color', teamAInfo.color);
+                card.style.setProperty('--team-b-color', teamBInfo.color);
+                
+                const quarter = match.Quarter || "UPCOMING";
+                const time = match.Time_Remaining || "--:--";
+                const scoreA = match.Score_A !== "" ? match.Score_A : "0";
+                const scoreB = match.Score_B !== "" ? match.Score_B : "0";
+
+                const isLive = ["q1", "q2", "q3", "q4", "ot", "halftime"].includes(quarter.toLowerCase());
+                const statusHTML = isLive 
+                    ? `<div class="live-pulse"><span class="pulse-dot"></span>LIVE - ${quarter}</div>`
+                    : `<span>${quarter}</span>`;
+
+                card.innerHTML = `
+                    <div class="status-bar">
+                        ${statusHTML}
+                        <span>⏱️ ${time}</span>
+                    </div>
+                    <div class="scoreboard">
+                        <div class="team">
+                            <span class="flag">${teamAInfo.flag}</span>
+                            <div class="team-name">${match.Team_A}</div>
+                        </div>
+                        <div class="scores">
+                            <span>${scoreA}</span> 
+                            
+                            -${scoreB}${teamBInfo.flag}${match.Team_B}`;container.appendChild(card);});}function refreshData() {const oldScript = document.getElementById('jsonp-trigger');if (oldScript) oldScript.remove();const script = document.createElement('script');script.src = API_URL + "&ts=" + new Date().getTime();script.id = 'jsonp-trigger';document.body.appendChild(script);}refreshData();setInterval(refreshData, 5000);
+                            </script>
 </body>
 </html>
