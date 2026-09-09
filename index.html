@@ -45,7 +45,7 @@
             position: relative;
             overflow: hidden;
         }
-        /* Left team accent accent bar */
+        /* Left team accent bar */
         .match-card::before {
             content: '';
             position: absolute;
@@ -55,7 +55,7 @@
             width: 6px;
             background-color: var(--team-a-color, #64748b);
         }
-        /* Right team accent accent bar */
+        /* Right team accent bar */
         .match-card::after {
             content: '';
             position: absolute;
@@ -133,21 +133,19 @@
 </head>
 <body>
 
-
- <h1>🏆 Aichi-Nagoya 2026</h1>
+    <h1>🏆 Aichi-Nagoya 2026</h1>
     <div class="subtitle">Asian Games Basketball Live Scores (Manual Custom Feed)</div>
     
     <div id="container">
         <div class="loading">Connecting to manual live data source...</div>
     </div>
 
- 
-      <script>
-        // 1. Paste your NEW deployed Google Apps Script URL here (Keep the ?callback=handleScores at the end!)
+    <script>
+        // 1. Deployed Google Apps Script URL
         const API_URL = "https://script.google.com/macros/s/AKfycbzQujm_u1LuS3PRWTR3Oj6PabftmLW3xL2_LhixiSsYRB_KN3sP7RQ4pZrqCNBszBLD/exec?callback=handleScores"; 
 
- // 2. Database of team flags and colors
-     const teamAssets = {
+        // 2. Database of team flags and colors
+        const teamAssets = {
             "Philippines": { flag: "🇵🇭", color: "#0038a8" }, 
             "Japan": { flag: "🇯🇵", color: "#bc002d" },
             "China": { flag: "🇨🇳", color: "#ee1c25" },
@@ -226,6 +224,7 @@
             document.body.appendChild(script);
         }
 
+        // Run functions
         refreshData();
         setInterval(refreshData, 5000);
     </script>
