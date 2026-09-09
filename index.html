@@ -89,7 +89,7 @@
             animation: pulse 1.5s infinite;
         }
         @keyframes pulse {
-            0 { transform: scale(0.95); opacity: 0.5; }
+            0% { transform: scale(0.95); opacity: 0.5; }
             50% { transform: scale(1.1); opacity: 1; }
             100% { transform: scale(0.95); opacity: 0.5; }
         }
@@ -141,47 +141,40 @@
     </div>
 
     <script>
-        // 1. Deployed Google Apps Script URL
-        const API_URL = "https://script.google.com/macros/s/AKfycbzQujm_u1LuS3PRWTR3Oj6PabftmLW3xL2_LhixiSsYRB_KN3sP7RQ4pZrqCNBszBLD/exec?callback=handleScores"; 
+        // 1. Google Script URL Feed
+        const API_URL = "https://google.com"; 
 
-        // 2. Database of team flags and colors
-     // 2. Database of team flags and colors (Supports abbreviations and extra spaces)
+        // 2. Base clean assets dictionary
         const teamAssets = {
-            // Philippines
-            "Philippines": { flag: "🇵🇭", color: "#0038a8" }, 
-            "PH Philippines": { flag: "🇵🇭", color: "#0038a8" },
-            "PH": { flag: "🇵🇭", color: "#0038a8" },
-            
-            // Bahrain
-            "Bahrain": { flag: "🇧🇭", color: "#ce1126" },
-            "Bahrain BH": { flag: "🇧🇭", color: "#ce1126" },
-            "BH": { flag: "🇧🇭", color: "#ce1126" },
-
-            // Iran
-            "Iran": { flag: "🇮🇷", color: "#239f40" },
-            "IR Iran": { flag: "🇮🇷", color: "#239f40" },
-            
-            // Qatar
-            "Qatar": { flag: "🇶🇦", color: "#8a1538" },
-            "Qatar QA": { flag: "🇶🇦", color: "#8a1538" },
-            
-            // Japan
-            "Japan": { flag: "🇯🇵", color: "#bc002d" },
-            "JP Japan": { flag: "🇯🇵", color: "#bc002d" },
-            
-            // China
-            "China": { flag: "🇨🇳", color: "#ee1c25" },
-            "CN China": { flag: "🇨🇳", color: "#ee1c25" },
-            
-            // Other Teams
-            "South Korea": { flag: "🇰🇷", color: "#003472" },
-            "KR South Korea": { flag: "🇰🇷", color: "#003472" },
-            "Jordan": { flag: "🇯🇴", color: "#1a1a1a" },
-            "Chinese Taipei": { flag: "🇹🇼", color: "#2d68c4" },
-            "Saudi Arabia": { flag: "🇸🇦", color: "#006c35" },
-            "Indonesia": { flag: "🇮🇩", color: "#ff0000" },
-            "Kazakhstan": { flag: "🇰🇿", color: "#00afca" }
+            "philippines": { flag: "🇵🇭", color: "#0038a8" }, 
+            "japan": { flag: "🇯🇵", color: "#bc002d" },
+            "china": { flag: "🇨🇳", color: "#ee1c25" },
+            "south korea": { flag: "🇰🇷", color: "#003472" },
+            "iran": { flag: "🇮🇷", color: "#239f40" },
+            "bahrain": { flag: "🇧🇭", color: "#ce1126" },
+            "qatar": { flag: "🇶🇦", color: "#8a1538" },
+            "jordan": { flag: "🇯🇴", color: "#1a1a1a" },
+            "chinese taipei": { flag: "🇹🇼", color: "#2d68c4" },
+            "saudi arabia": { flag: "🇸🇦", color: "#006c35" },
+            "indonesia": { flag: "🇮🇩", color: "#ff0000" },
+            "kazakhstan": { flag: "🇰🇿", color: "#00afca" }
         };
+
+        // Advanced scanning helper function
+        function getTeamData(rawTeamName) {
+            if (!rawTeamName) return { flag: "🏳️", color: "#64748b" };
+            
+            // Clean spaces and lowercase everything
+            const cleaned = rawTeamName.replace(/\u00A0/g, ' ').toLowerCase().trim();
+            
+            // Look for any keyword inside the string
+            for (const key in teamAssets) {
+                if (cleaned.includes(key)) {
+                    return teamAssets[key];
+                }
+            }
+            return { flag: "🏳️", color: "#64748b" };
+        }
 
         function handleScores(matches) {
             const container = document.getElementById('container');
@@ -193,14 +186,10 @@
                 const card = document.createElement('div');
                 card.className = 'match-card';
                 
-         // This cleans regular spaces AND secret Google Sheet non-breaking spaces (\u00A0)
-const cleanTeamA = match.Team_A.replace(/\u00A0/g, ' ').trim();
-const cleanTeamB = match.Team_B.replace(/\u00A0/g, ' ').trim();
+                // Use smart extraction engine to grab accurate flag details
+                const teamAInfo = getTeamData(match.Team_A);
+                const teamBInfo = getTeamData(match.Team_B);
 
-const teamAInfo = teamAssets[cleanTeamA] || { flag: "🏳️", color: "#64748b" };
-const teamBInfo = teamAssets[cleanTeamB] || { flag: "🏳️", color: "#64748b" };
-
-                // Apply colors to the dynamic accent bars via CSS variables
                 card.style.setProperty('--team-a-color', teamAInfo.color);
                 card.style.setProperty('--team-b-color', teamBInfo.color);
                 
@@ -209,7 +198,6 @@ const teamBInfo = teamAssets[cleanTeamB] || { flag: "🏳️", color: "#64748b" 
                 const scoreA = match.Score_A !== "" ? match.Score_A : "0";
                 const scoreB = match.Score_B !== "" ? match.Score_B : "0";
 
-                // Generate live pulsing text if game is active
                 const isLive = ["q1", "q2", "q3", "q4", "ot", "halftime"].includes(quarter.toLowerCase());
                 const statusHTML = isLive 
                     ? `<div class="live-pulse"><span class="pulse-dot"></span>LIVE - ${quarter}</div>`
@@ -250,7 +238,6 @@ const teamBInfo = teamAssets[cleanTeamB] || { flag: "🏳️", color: "#64748b" 
             document.body.appendChild(script);
         }
 
-        // Run functions immediately
         refreshData();
         setInterval(refreshData, 5000);
     </script>
