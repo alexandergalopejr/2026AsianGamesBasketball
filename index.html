@@ -145,14 +145,37 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbzQujm_u1LuS3PRWTR3Oj6PabftmLW3xL2_LhixiSsYRB_KN3sP7RQ4pZrqCNBszBLD/exec?callback=handleScores"; 
 
         // 2. Database of team flags and colors
+     // 2. Database of team flags and colors (Supports abbreviations and extra spaces)
         const teamAssets = {
+            // Philippines
             "Philippines": { flag: "🇵🇭", color: "#0038a8" }, 
-            "Japan": { flag: "🇯🇵", color: "#bc002d" },
-            "China": { flag: "🇨🇳", color: "#ee1c25" },
-            "South Korea": { flag: "🇰🇷", color: "#003472" },
-            "Iran": { flag: "🇮🇷", color: "#239f40" },
+            "PH Philippines": { flag: "🇵🇭", color: "#0038a8" },
+            "PH": { flag: "🇵🇭", color: "#0038a8" },
+            
+            // Bahrain
             "Bahrain": { flag: "🇧🇭", color: "#ce1126" },
+            "Bahrain BH": { flag: "🇧🇭", color: "#ce1126" },
+            "BH": { flag: "🇧🇭", color: "#ce1126" },
+
+            // Iran
+            "Iran": { flag: "🇮🇷", color: "#239f40" },
+            "IR Iran": { flag: "🇮🇷", color: "#239f40" },
+            
+            // Qatar
             "Qatar": { flag: "🇶🇦", color: "#8a1538" },
+            "Qatar QA": { flag: "🇶🇦", color: "#8a1538" },
+            
+            // Japan
+            "Japan": { flag: "🇯🇵", color: "#bc002d" },
+            "JP Japan": { flag: "🇯🇵", color: "#bc002d" },
+            
+            // China
+            "China": { flag: "🇨🇳", color: "#ee1c25" },
+            "CN China": { flag: "🇨🇳", color: "#ee1c25" },
+            
+            // Other Teams
+            "South Korea": { flag: "🇰🇷", color: "#003472" },
+            "KR South Korea": { flag: "🇰🇷", color: "#003472" },
             "Jordan": { flag: "🇯🇴", color: "#1a1a1a" },
             "Chinese Taipei": { flag: "🇹🇼", color: "#2d68c4" },
             "Saudi Arabia": { flag: "🇸🇦", color: "#006c35" },
@@ -170,9 +193,12 @@
                 const card = document.createElement('div');
                 card.className = 'match-card';
                 
-                // Get flags and colors from database (fallback to empty flag & gray color if missing)
-                const teamAInfo = teamAssets[match.Team_A.trim()] || { flag: "🏳️", color: "#64748b" };
-                const teamBInfo = teamAssets[match.Team_B.trim()] || { flag: "🏳️", color: "#64748b" };
+         // This cleans regular spaces AND secret Google Sheet non-breaking spaces (\u00A0)
+const cleanTeamA = match.Team_A.replace(/\u00A0/g, ' ').trim();
+const cleanTeamB = match.Team_B.replace(/\u00A0/g, ' ').trim();
+
+const teamAInfo = teamAssets[cleanTeamA] || { flag: "🏳️", color: "#64748b" };
+const teamBInfo = teamAssets[cleanTeamB] || { flag: "🏳️", color: "#64748b" };
 
                 // Apply colors to the dynamic accent bars via CSS variables
                 card.style.setProperty('--team-a-color', teamAInfo.color);
