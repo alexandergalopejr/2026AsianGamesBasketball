@@ -153,9 +153,9 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbzQujm_u1LuS3PRWTR3Oj6PabftmLW3xL2_LhixiSsYRB_KN3sP7RQ4pZrqCNBszBLD/exec?callback=handleScores";; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbzQujm_u1LuS3PRWTR3Oj6PabftmLW3xL2_LhixiSsYRB_KN3sP7RQ4pZrqCNBszBLD/exec?callback=handleScores"; 
 
-         // All mappings now cleanly target your repository's local file structures directly
+        // All mappings cleanly targeting your local repository files directly
         const teamAssets = {
             "chinese taipei": { flag: '<img src="./taipei.svg" alt="TPE">', color: "#2d68c4" },
             "taip": { flag: '<img src="./taipei.svg" alt="TPE">', color: "#2d68c4" },
@@ -253,7 +253,9 @@
             script.src = API_URL + "&ts=" + new Date().getTime(); 
             script.id = 'jsonp-trigger';
             document.body.appendChild(script);
-        }refreshData();setInterval(refreshData, 5000);
+        }
+
+        refreshData();setInterval(refreshData, 5000);
                             </script>
 </body>
 </html>
