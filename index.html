@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #0f172a;
+            background-color: #0b0f19;
             color: #f8fafc;
             margin: 0;
             padding: 20px;
@@ -17,8 +17,16 @@
         }
         h1 {
             color: #38bdf8;
-            margin-bottom: 24px;
+            margin-bottom: 4px;
             font-size: 24px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 24px;
             text-align: center;
         }
         #container {
@@ -31,59 +39,132 @@
         .match-card {
             background-color: #1e293b;
             border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 16px 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
             border: 1px solid #334155;
+            position: relative;
+            overflow: hidden;
+        }
+        /* Left team accent accent bar */
+        .match-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background-color: var(--team-a-color, #64748b);
+        }
+        /* Right team accent accent bar */
+        .match-card::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background-color: var(--team-b-color, #64748b);
         }
         .status-bar {
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
-            font-weight: 700;
+            font-size: 12px;
+            font-weight: 800;
             color: #f59e0b;
-            margin-bottom: 12px;
-            border-bottom: 1px solid #334155;
-            padding-bottom: 8px;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .live-pulse {
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.5; }
         }
         .scoreboard {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 12px;
         }
         .team {
             flex: 1;
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .team.left { text-align: left; }
-        .team.right { text-align: right; }
+        .team.left { justify-content: flex-start; text-align: left; }
+        .team.right { justify-content: flex-end; text-align: right; flex-direction: row-reverse; }
+        .flag {
+            font-size: 24px;
+            line-height: 1;
+        }
         .scores {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 32px;
-            font-weight: 800;
-            font-family: monospace;
-            color: #ffffff;
+            gap: 14px;
+            font-size: 34px;
+            font-weight: 900;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #0f172a;
+            padding: 4px 16px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            min-width: 90px;
+            justify-content: center;
         }
-        .divider { color: #64748b; font-size: 20px; }
-        .loading { text-align: center; color: #94a3b8; margin-top: 20px; }
+        .divider { color: #475569; font-size: 20px; }
+        .loading { text-align: center; color: #94a3b8; margin-top: 40px; font-weight: 500; }
     </style>
 </head>
 <body>
 
-    <h1>🏆 Asian Games Basketball Live Tracker</h1>
+
+ <h1>🏆 Aichi-Nagoya 2026</h1>
+    <div class="subtitle">Asian Games Basketball Live Scores (Manual Custom Feed)</div>
+    
     <div id="container">
         <div class="loading">Connecting to manual live data source...</div>
     </div>
+
+ 
       <script>
         // 1. Paste your NEW deployed Google Apps Script URL here (Keep the ?callback=handleScores at the end!)
         const API_URL = "https://script.google.com/macros/s/AKfycbzQujm_u1LuS3PRWTR3Oj6PabftmLW3xL2_LhixiSsYRB_KN3sP7RQ4pZrqCNBszBLD/exec?callback=handleScores"; 
 
-        // 2. This function automatically handles the data when it arrives
+ // 2. Database of team flags and colors
+     const teamAssets = {
+            "Philippines": { flag: "🇵🇭", color: "#0038a8" }, 
+            "Japan": { flag: "🇯🇵", color: "#bc002d" },
+            "China": { flag: "🇨🇳", color: "#ee1c25" },
+            "South Korea": { flag: "🇰🇷", color: "#003472" },
+            "Iran": { flag: "🇮🇷", color: "#239f40" },
+            "Bahrain": { flag: "🇧🇭", color: "#ce1126" },
+            "Qatar": { flag: "🇶🇦", color: "#8a1538" },
+            "Jordan": { flag: "🇯🇴", color: "#1a1a1a" },
+            "Chinese Taipei": { flag: "🇹🇼", color: "#2d68c4" },
+            "Saudi Arabia": { flag: "🇸🇦", color: "#006c35" },
+            "Indonesia": { flag: "🇮🇩", color: "#ff0000" },
+            "Kazakhstan": { flag: "🇰🇿", color: "#00afca" }
+        };
+
         function handleScores(matches) {
             const container = document.getElementById('container');
-            container.innerHTML = ''; // Clear loading indicator
+            container.innerHTML = ''; 
 
             matches.forEach(match => {
                 if (!match.Team_A || !match.Team_B) return;
@@ -91,47 +172,61 @@
                 const card = document.createElement('div');
                 card.className = 'match-card';
                 
+                // Get flags and colors from database (fallback to empty flag & gray color if missing)
+                const teamAInfo = teamAssets[match.Team_A.trim()] || { flag: "🏳️", color: "#64748b" };
+                const teamBInfo = teamAssets[match.Team_B.trim()] || { flag: "🏳️", color: "#64748b" };
+
+                // Apply colors to the dynamic accent bars via CSS variables
+                card.style.setProperty('--team-a-color', teamAInfo.color);
+                card.style.setProperty('--team-b-color', teamBInfo.color);
+                
                 const quarter = match.Quarter || "UPCOMING";
-                const time = match.Time_Remaining || "00:00";
+                const time = match.Time_Remaining || "--:--";
                 const scoreA = match.Score_A !== "" ? match.Score_A : "0";
                 const scoreB = match.Score_B !== "" ? match.Score_B : "0";
 
+                // Generate live pulsing text if game is active
+                const isLive = ["q1", "q2", "q3", "q4", "ot", "halftime"].includes(quarter.toLowerCase());
+                const statusHTML = isLive 
+                    ? `<div class="live-pulse"><span class="pulse-dot"></span>LIVE - ${quarter}</div>`
+                    : `<span>${quarter}</span>`;
+
                 card.innerHTML = `
                     <div class="status-bar">
-                        <span>${quarter}</span>
+                        ${statusHTML}
                         <span>⏱️ ${time}</span>
                     </div>
                     <div class="scoreboard">
-                        <div class="team left">${match.Team_A}</div>
+                        <div class="team left">
+                            <span class="flag">${teamAInfo.flag}</span>
+                            <span>${match.Team_A}</span>
+                        </div>
                         <div class="scores">
                             <span>${scoreA}</span>
                             <span class="divider">-</span>
                             <span>${scoreB}</span>
                         </div>
-                        <div class="team right">${match.Team_B}</div>
+                        <div class="team right">
+                            <span class="flag">${teamBInfo.flag}</span>
+                            <span>${match.Team_B}</span>
+                        </div>
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        // 3. This function injects a script tag to request the data bypasses CORS
         function refreshData() {
-            // Remove old script tag if it exists to clean up memory
             const oldScript = document.getElementById('jsonp-trigger');
             if (oldScript) oldScript.remove();
 
             const script = document.createElement('script');
-            // Append a timestamp to prevent the browser from caching old scores
             script.src = API_URL + "&ts=" + new Date().getTime(); 
             script.id = 'jsonp-trigger';
             document.body.appendChild(script);
         }
 
-        // Run immediately on load
         refreshData();
-
-        // Auto-refresh scores every 5 seconds
         setInterval(refreshData, 5000);
     </script>
 </body>
