@@ -116,7 +116,6 @@
             justify-content: center;
             height: 32px;
         }
-        /* Strict global rules keeping all flag graphics identical */
         .flag img {
             width: 36px !important;
             height: 24px !important;
@@ -156,31 +155,31 @@
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbzQujm_u1LuS3PRWTR3Oj6PabftmLW3xL2_LhixiSsYRB_KN3sP7RQ4pZrqCNBszBLD/exec?callback=handleScores";; 
 
-        // Uses Flagpack's open source cdn mapping alongside your local repository plum blossom graphic file
+         // All mappings now cleanly target your repository's local file structures directly
         const teamAssets = {
             "chinese taipei": { flag: '<img src="./taipei.svg" alt="TPE">', color: "#2d68c4" },
             "taip": { flag: '<img src="./taipei.svg" alt="TPE">', color: "#2d68c4" },
-            "philippines": { flag: '<img src="https://github.io" alt="PH">', color: "#0038a8" }, 
-            "phil": { flag: '<img src="https://github.io" alt="PH">', color: "#0038a8" }, 
-            "japan": { flag: '<img src="https://github.io" alt="JP">', color: "#bc002d" },
-            "japa": { flag: '<img src="https://github.io" alt="JP">', color: "#bc002d" },
-            "china": { flag: '<img src="https://github.io" alt="CN">', color: "#ee1c25" },
-            "chin": { flag: '<img src="https://github.io" alt="CN">', color: "#ee1c25" },
-            "south korea": { flag: '<img src="https://github.io" alt="KR">', color: "#003472" },
-            "kor": { flag: '<img src="https://github.io" alt="KR">', color: "#003472" },
-            "iran": { flag: '<img src="https://github.io" alt="IR">', color: "#239f40" },
-            "bahrain": { flag: '<img src="https://github.io" alt="BH">', color: "#ce1126" },
-            "bahr": { flag: '<img src="https://github.io" alt="BH">', color: "#ce1126" },
-            "qatar": { flag: '<img src="https://github.io" alt="QA">', color: "#8a1538" },
-            "qata": { flag: '<img src="https://github.io" alt="QA">', color: "#8a1538" },
-            "jordan": { flag: '<img src="https://github.io" alt="JO">', color: "#1a1a1a" },
-            "jord": { flag: '<img src="https://github.io" alt="JO">', color: "#1a1a1a" },
-            "saudi arabia": { flag: '<img src="https://github.io" alt="SA">', color: "#006c35" },
-            "saud": { flag: '<img src="https://github.io" alt="SA">', color: "#006c35" },
-            "indonesia": { flag: '<img src="https://github.io" alt="ID">', color: "#ff0000" },
-            "indo": { flag: '<img src="https://github.io" alt="ID">', color: "#ff0000" },
-            "kazakhstan": { flag: '<img src="https://github.io" alt="KZ">', color: "#00afca" },
-            "kaza": { flag: '<img src="https://github.io" alt="KZ">', color: "#00afca" }
+            "philippines": { flag: '<img src="./philippines.svg" alt="PH">', color: "#0038a8" }, 
+            "phil": { flag: '<img src="./philippines.svg" alt="PH">', color: "#0038a8" }, 
+            "japan": { flag: '<img src="./japan.svg" alt="JP">', color: "#bc002d" },
+            "japa": { flag: '<img src="./japan.svg" alt="JP">', color: "#bc002d" },
+            "china": { flag: '<img src="./china.svg" alt="CN">', color: "#ee1c25" },
+            "chin": { flag: '<img src="./china.svg" alt="CN">', color: "#ee1c25" },
+            "south korea": { flag: '<img src="./southkorea.svg" alt="KR">', color: "#003472" },
+            "kor": { flag: '<img src="./southkorea.svg" alt="KR">', color: "#003472" },
+            "iran": { flag: '<img src="./iran.svg" alt="IR">', color: "#239f40" },
+            "bahrain": { flag: '<img src="./bahrain.svg" alt="BH">', color: "#ce1126" },
+            "bahr": { flag: '<img src="./bahrain.svg" alt="BH">', color: "#ce1126" },
+            "qatar": { flag: '<img src="./qatar.svg" alt="QA">', color: "#8a1538" },
+            "qata": { flag: '<img src="./qatar.svg" alt="QA">', color: "#8a1538" },
+            "jordan": { flag: '<img src="./jordan.svg" alt="JO">', color: "#1a1a1a" },
+            "jord": { flag: '<img src="./jordan.svg" alt="JO">', color: "#1a1a1a" },
+            "saudi arabia": { flag: '<img src="./saudiarabia.svg" alt="SA">', color: "#006c35" },
+            "saud": { flag: '<img src="./saudiarabia.svg" alt="SA">', color: "#006c35" },
+            "indonesia": { flag: '<img src="./indonesia.svg" alt="ID">', color: "#ff0000" },
+            "indo": { flag: '<img src="./indonesia.svg" alt="ID">', color: "#ff0000" },
+            "kazakhstan": { flag: '<img src="./kazakhstan.svg" alt="KZ">', color: "#00afca" },
+            "kaza": { flag: '<img src="./kazakhstan.svg" alt="KZ">', color: "#00afca" }
         };
 
         function getTeamData(rawTeamName) {
@@ -232,9 +231,29 @@
                             <div class="team-name">${match.Team_A}</div>
                         </div>
                         <div class="scores">
-                            <span>${scoreA}</span> 
-                            
-                            -${scoreB}${teamBInfo.flag}${match.Team_B}`;container.appendChild(card);});}function refreshData() {const oldScript = document.getElementById('jsonp-trigger');if (oldScript) oldScript.remove();const script = document.createElement('script');script.src = API_URL + "&ts=" + new Date().getTime();script.id = 'jsonp-trigger';document.body.appendChild(script);}refreshData();setInterval(refreshData, 5000);
+                            <span>${scoreA}</span>
+                            <span class="divider">-</span>
+                            <span>${scoreB}</span>
+                        </div>
+                        <div class="team">
+                            <span class="flag">${teamBInfo.flag}</span>
+                            <div class="team-name">${match.Team_B}</div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function refreshData() {
+            const oldScript = document.getElementById('jsonp-trigger');
+            if (oldScript) oldScript.remove();
+
+            const script = document.createElement('script');
+            script.src = API_URL + "&ts=" + new Date().getTime(); 
+            script.id = 'jsonp-trigger';
+            document.body.appendChild(script);
+        }refreshData();setInterval(refreshData, 5000);
                             </script>
 </body>
 </html>
