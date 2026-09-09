@@ -76,57 +76,63 @@
     <div id="container">
         <div class="loading">Connecting to manual live data source...</div>
     </div>
+      <script>
+        // 1. Paste your NEW deployed Google Apps Script URL here (Keep the ?callback=handleScores at the end!)
+        const API_URL = "https://script.google.com/macros/s/AKfycbzQujm_u1LuS3PRWTR3Oj6PabftmLW3xL2_LhixiSsYRB_KN3sP7RQ4pZrqCNBszBLD/exec?callback=handleScores"; 
 
-    <script>
-        // Paste your deployed Google Apps Script URL here
-        const API_URL = "https://script.google.com/macros/s/AKfycbzQujm_u1LuS3PRWTR3Oj6PabftmLW3xL2_LhixiSsYRB_KN3sP7RQ4pZrqCNBszBLD/exec"; 
+        // 2. This function automatically handles the data when it arrives
+        function handleScores(matches) {
+            const container = document.getElementById('container');
+            container.innerHTML = ''; // Clear loading indicator
 
-        async function fetchScores() {
-    try {
-        // Force the browser to follow Google's redirect rules smoothly
-        const response = await fetch(API_URL, { method: 'GET', redirect: 'follow' });
-        const matches = await response.json();
-        
-        const container = document.getElementById('container');
-        container.innerHTML = ''; 
+            matches.forEach(match => {
+                if (!match.Team_A || !match.Team_B) return;
 
-        matches.forEach(match => {
-            if (!match.Team_A || !match.Team_B) return;
+                const card = document.createElement('div');
+                card.className = 'match-card';
+                
+                const quarter = match.Quarter || "UPCOMING";
+                const time = match.Time_Remaining || "00:00";
+                const scoreA = match.Score_A !== "" ? match.Score_A : "0";
+                const scoreB = match.Score_B !== "" ? match.Score_B : "0";
 
-            const card = document.createElement('div');
-            card.className = 'match-card';
-            
-            const quarter = match.Quarter || "UPCOMING";
-            const time = match.Time_Remaining || "00:00";
-            const scoreA = match.Score_A !== "" ? match.Score_A : "0";
-            const scoreB = match.Score_B !== "" ? match.Score_B : "0";
-
-            card.innerHTML = `
-                <div class="status-bar">
-                    <span>${quarter}</span>
-                    <span>⏱️ ${time}</span>
-                </div>
-                <div class="scoreboard">
-                    <div class="team left">${match.Team_A}</div>
-                    <div class="scores">
-                        <span>${scoreA}</span>
-                        <span class="divider">-</span>
-                        <span>${scoreB}</span>
+                card.innerHTML = `
+                    <div class="status-bar">
+                        <span>${quarter}</span>
+                        <span>⏱️ ${time}</span>
                     </div>
-                    <div class="team right">${match.Team_B}</div>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    } catch (error) {
-        console.error("Error fetching live scores:", error);
-        document.getElementById('container').innerHTML = `<div class="loading">Connection error. Retrying...</div>`;
-    }
-}
+                    <div class="scoreboard">
+                        <div class="team left">${match.Team_A}</div>
+                        <div class="scores">
+                            <span>${scoreA}</span>
+                            <span class="divider">-</span>
+                            <span>${scoreB}</span>
+                        </div>
+                        <div class="team right">${match.Team_B}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
 
-// Run loops
-fetchScores();
-setInterval(fetchScores, 5000);
+        // 3. This function injects a script tag to request the data bypasses CORS
+        function refreshData() {
+            // Remove old script tag if it exists to clean up memory
+            const oldScript = document.getElementById('jsonp-trigger');
+            if (oldScript) oldScript.remove();
+
+            const script = document.createElement('script');
+            // Append a timestamp to prevent the browser from caching old scores
+            script.src = API_URL + "&ts=" + new Date().getTime(); 
+            script.id = 'jsonp-trigger';
+            document.body.appendChild(script);
+        }
+
+        // Run immediately on load
+        refreshData();
+
+        // Auto-refresh scores every 5 seconds
+        setInterval(refreshData, 5000);
     </script>
 </body>
 </html>
