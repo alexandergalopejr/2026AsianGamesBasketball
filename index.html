@@ -82,53 +82,51 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbxcgzj6fF4S63svYX5jumVu_95I5LKw8cLnqBgY7lf3ybNLCA8L9yEYR4fwApjCc4nh/exec"; 
 
         async function fetchScores() {
-            try {
-                const response = await fetch(API_URL);
-                const matches = await response.json();
-                
-                const container = document.getElementById('container');
-                container.innerHTML = ''; // Clear old data smoothly
+    try {
+        // Force the browser to follow Google's redirect rules smoothly
+        const response = await fetch(API_URL, { method: 'GET', redirect: 'follow' });
+        const matches = await response.json();
+        
+        const container = document.getElementById('container');
+        container.innerHTML = ''; 
 
-                matches.forEach(match => {
-                    // Check for empty rows to prevent rendering blank cards
-                    if (!match.Team_A || !match.Team_B) return;
+        matches.forEach(match => {
+            if (!match.Team_A || !match.Team_B) return;
 
-                    const card = document.createElement('div');
-                    card.className = 'match-card';
-                    
-                    // Default fallback tags if data entry is empty
-                    const quarter = match.Quarter || "UPCOMING";
-                    const time = match.Time_Remaining || "00:00";
-                    const scoreA = match.Score_A !== "" ? match.Score_A : "0";
-                    const scoreB = match.Score_B !== "" ? match.Score_B : "0";
+            const card = document.createElement('div');
+            card.className = 'match-card';
+            
+            const quarter = match.Quarter || "UPCOMING";
+            const time = match.Time_Remaining || "00:00";
+            const scoreA = match.Score_A !== "" ? match.Score_A : "0";
+            const scoreB = match.Score_B !== "" ? match.Score_B : "0";
 
-                    card.innerHTML = `
-                        <div class="status-bar">
-                            <span>${quarter}</span>
-                            <span>⏱️ ${time}</span>
-                        </div>
-                        <div class="scoreboard">
-                            <div class="team left">${match.Team_A}</div>
-                            <div class="scores">
-                                <span>${scoreA}</span>
-                                <span class="divider">-</span>
-                                <span>${scoreB}</span>
-                            </div>
-                            <div class="team right">${match.Team_B}</div>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            } catch (error) {
-                console.error("Error fetching live scores:", error);
-            }
-        }
+            card.innerHTML = `
+                <div class="status-bar">
+                    <span>${quarter}</span>
+                    <span>⏱️ ${time}</span>
+                </div>
+                <div class="scoreboard">
+                    <div class="team left">${match.Team_A}</div>
+                    <div class="scores">
+                        <span>${scoreA}</span>
+                        <span class="divider">-</span>
+                        <span>${scoreB}</span>
+                    </div>
+                    <div class="team right">${match.Team_B}</div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Error fetching live scores:", error);
+        document.getElementById('container').innerHTML = `<div class="loading">Connection error. Retrying...</div>`;
+    }
+}
 
-        // Run immediately on page load
-        fetchScores();
-
-        // Refresh database contents automatically every 5 seconds
-        setInterval(fetchScores, 5000);
+// Run loops
+fetchScores();
+setInterval(fetchScores, 5000);
     </script>
 </body>
 </html>
