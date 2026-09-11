@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Asian Games Basketball Scores</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0b0f19;
+            color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #38bdf8;
+            margin-bottom: 4px;
+            font-size: 24px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        #container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .match-card {
+            background-color: #1e293b;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+            position: relative;
+            overflow: hidden;
+        }
+        .match-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background-color: var(--team-a-color, #64748b);
+        }
+        .match-card::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background-color: var(--team-b-color, #64748b);
+        }
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 800;
+            color: #f59e0b;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .live-pulse {
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.5; }
+        }
+        .scoreboard {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .team {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .team-name {
+            font-size: 15px;
+            font-weight: 700;
+            text-align: center;
+            word-break: break-word;
+        }
+        .flag {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 32px;
+        }
+        .flag img {
+            width: 36px !important;
+            height: 24px !important;
+            object-fit: contain !important;
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: inline-block;
+        }
+        .scores {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 34px;
+            font-weight: 900;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #0f172a;
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            min-width: 80px;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .divider { color: #475569; font-size: 20px; }
+        .loading { text-align: center; color: #94a3b8; margin-top: 40px; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+    <h1>🏆 Aichi-Nagoya 2026</h1>
+    <div class="subtitle">Asian Games Basketball Live Scores (Manual Custom Feed)</div>
+    
+    <div id="container">
+        <div class="loading">Connecting to manual live data source...</div>
+    </div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbzQujm_u1LuS3PRWTR3Oj6PabftmLW3xL2_LhixiSsYRB_KN3sP7RQ4pZrqCNBszBLD/exec?callback=handleScores"; 
+
+        // All mappings cleanly targeting your local repository files directly
+        const teamAssets = {
+            "chinese taipei": { flag: '<img src="./taipei.svg" alt="TPE">', color: "#2d68c4" },
+            "taip": { flag: '<img src="./taipei.svg" alt="TPE">', color: "#2d68c4" },
+            "philippines": { flag: '<img src="./philippines.svg" alt="PH">', color: "#0038a8" }, 
+            "phil": { flag: '<img src="./philippines.svg" alt="PH">', color: "#0038a8" }, 
+            "japan": { flag: '<img src="./japan.svg" alt="JP">', color: "#bc002d" },
+            "japa": { flag: '<img src="./japan.svg" alt="JP">', color: "#bc002d" },
+            "china": { flag: '<img src="./china.svg" alt="CN">', color: "#ee1c25" },
+            "chin": { flag: '<img src="./china.svg" alt="CN">', color: "#ee1c25" },
+            "south korea": { flag: '<img src="./southkorea.svg" alt="KR">', color: "#003472" },
+            "kor": { flag: '<img src="./southkorea.svg" alt="KR">', color: "#003472" },
+            "iran": { flag: '<img src="./iran.svg" alt="IR">', color: "#239f40" },
+            "bahrain": { flag: '<img src="./bahrain.svg" alt="BH">', color: "#ce1126" },
+            "bahr": { flag: '<img src="./bahrain.svg" alt="BH">', color: "#ce1126" },
+            "qatar": { flag: '<img src="./qatar.svg" alt="QA">', color: "#8a1538" },
+            "qata": { flag: '<img src="./qatar.svg" alt="QA">', color: "#8a1538" },
+            "jordan": { flag: '<img src="./jordan.svg" alt="JO">', color: "#1a1a1a" },
+            "jord": { flag: '<img src="./jordan.svg" alt="JO">', color: "#1a1a1a" },
+            "saudi arabia": { flag: '<img src="./saudiarabia.svg" alt="SA">', color: "#006c35" },
+            "saud": { flag: '<img src="./saudiarabia.svg" alt="SA">', color: "#006c35" },
+            "indonesia": { flag: '<img src="./indonesia.svg" alt="ID">', color: "#ff0000" },
+            "indo": { flag: '<img src="./indonesia.svg" alt="ID">', color: "#ff0000" },
+            "kazakhstan": { flag: '<img src="./kazakhstan.svg" alt="KZ">', color: "#00afca" },
+            "kaza": { flag: '<img src="./kazakhstan.svg" alt="KZ">', color: "#00afca" }
+        };
+
+        function getTeamData(rawTeamName) {
+            if (!rawTeamName) return { flag: "🏳️", color: "#64748b" };
+            const cleaned = String(rawTeamName).toLowerCase().replace(/[\s\u00A0]+/g, ' ').trim();
+            
+            for (const key in teamAssets) {
+                if (cleaned.indexOf(key) !== -1) {
+                    return teamAssets[key];
+                }
+            }
+            return { flag: "🏳️", color: "#64748b" };
+        }
+
+        function handleScores(matches) {
+            const container = document.getElementById('container');
+            container.innerHTML = ''; 
+
+            matches.forEach(match => {
+                if (!match.Team_A || !match.Team_B) return;
+
+                const card = document.createElement('div');
+                card.className = 'match-card';
+                
+                const teamAInfo = getTeamData(match.Team_A);
+                const teamBInfo = getTeamData(match.Team_B);
+
+                card.style.setProperty('--team-a-color', teamAInfo.color);
+                card.style.setProperty('--team-b-color', teamBInfo.color);
+                
+                const quarter = match.Quarter || "UPCOMING";
+                const time = match.Time_Remaining || "--:--";
+                const scoreA = match.Score_A !== "" ? match.Score_A : "0";
+                const scoreB = match.Score_B !== "" ? match.Score_B : "0";
+
+                const isLive = ["q1", "q2", "q3", "q4", "ot", "halftime"].includes(quarter.toLowerCase());
+                const statusHTML = isLive 
+                    ? `<div class="live-pulse"><span class="pulse-dot"></span>LIVE - ${quarter}</div>`
+                    : `<span>${quarter}</span>`;
+
+                card.innerHTML = `
+                    <div class="status-bar">
+                        ${statusHTML}
+                        <span>⏱️ ${time}</span>
+                    </div>
+                    <div class="scoreboard">
+                        <div class="team">
+                            <span class="flag">${teamAInfo.flag}</span>
+                            <div class="team-name">${match.Team_A}</div>
+                        </div>
+                        <div class="scores">
+                            <span>${scoreA}</span>
+                            <span class="divider">-</span>
+                            <span>${scoreB}</span>
+                        </div>
+                        <div class="team">
+                            <span class="flag">${teamBInfo.flag}</span>
+                            <div class="team-name">${match.Team_B}</div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function refreshData() {
+            const oldScript = document.getElementById('jsonp-trigger');
+            if (oldScript) oldScript.remove();
+
+            const script = document.createElement('script');
+            script.src = API_URL + "&ts=" + new Date().getTime(); 
+            script.id = 'jsonp-trigger';
+            document.body.appendChild(script);
+        }
+
+        refreshData();setInterval(refreshData, 5000);
+                            </script>
+</body>
+</html>
