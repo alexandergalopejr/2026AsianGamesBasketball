@@ -109,6 +109,7 @@
             font-weight: 700;
             text-align: center;
             word-break: break-word;
+            margin-top: 6px;
         }
         .flag {
             display: flex;
@@ -138,6 +139,7 @@
             min-width: 80px;
             justify-content: center;
             flex-shrink: 0;
+            color: #38bdf8;
         }
         .divider { color: #475569; font-size: 20px; }
         .loading { text-align: center; color: #94a3b8; margin-top: 40px; font-weight: 500; }
@@ -153,8 +155,6 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbzQujm_u1LuS3PRWTR3Oj6PabftmLW3xL2_LhixiSsYRB_KN3sP7RQ4pZrqCNBszBLD/exec?callback=handleScores"; 
-
         // All mappings cleanly targeting your local repository files directly
         const teamAssets = {
             "chinese taipei": { flag: '<img src="./taipei.svg" alt="TPE">', color: "#2d68c4" },
@@ -198,6 +198,11 @@
             const container = document.getElementById('container');
             container.innerHTML = ''; 
 
+            if (!matches || matches.length === 0) {
+                container.innerHTML = '<div class="loading">No matches available right now.</div>';
+                return;
+            }
+
             matches.forEach(match => {
                 if (!match.Team_A || !match.Team_B) return;
 
@@ -205,35 +210,46 @@
                 card.className = 'match-card';
                 
                 const teamAInfo = getTeamData(match.Team_A);
-                const teamBInfo = getTeamData(match.Team_B);
+                const teamBInfo = getTeamData(match.Team_Data || match.Team_B);
 
                 card.style.setProperty('--team-a-color', teamAInfo.color);
                 card.style.setProperty('--team-b-color', teamBInfo.color);
                 
-                const quarter = match.Quarter || "UPCOMING";
+                const quarter = (match.Quarter || "UPCOMING").toUpperCase();
                 const time = match.Time_Remaining || "--:--";
-                const scoreA = match.Score_A !== "" ? match.Score_A : "0";
-                const scoreB = match.Score_B !== "" ? match.Score_B : "0";
+                
+                // ✅ FIXED: Repaired broken lookup conditional syntax cutoff bugs
+                const displayScoreA = (match.Score_A !== undefined && match.Score_A !== "") ? match.Score_A : "0";
+                const displayScoreB = (match.Score_B !== undefined && match.Score_B !== "") ? match.Score_B : "0";
 
-                const isLive = ["q1", "q2", "q3", "q4", "ot", "halftime"].includes(quarter.toLowerCase());
-                const statusHTML = isLive 
-                    ? `<div class="live-pulse"><span class="pulse-dot"></span>LIVE - ${quarter}</div>`
-                    : `<span>${quarter}</span>`;
+                let isLive = quarter === "LIVE" || quarter.includes("Q") || quarter.includes("MIN");
+                let statusBarHtml = '';
+
+                if (isLive) {
+                    statusBarHtml = `
+                        <div class="status-bar">
+                            <div class="live-pulse"><span class="pulse-dot"></span>LIVE • ${quarter}</div>
+                            <div>${time}</div>
+                        </div>`;
+                } else {
+                    statusBarHtml = `
+                        <div class="status-bar" style="color: #64748b;">
+                            <div>${quarter}</div>
+                            <div>${match.Date_Time || ''}</div>
+                        </div>`;
+                }
 
                 card.innerHTML = `
-                    <div class="status-bar">
-                        ${statusHTML}
-                        <span>⏱️ ${time}</span>
-                    </div>
+                    ${statusBarHtml}
                     <div class="scoreboard">
                         <div class="team">
-                            <span class="flag">${teamAInfo.flag}</span>
+                            <div class="flag">${teamAInfo.flag}</div>
                             <div class="team-name">${match.Team_A}</div>
                         </div>
                         <div class="scores">
-                            <span>${scoreA}</span>
+                            <span>${displayScoreA}</span>
                             <span class="divider">-</span>
-                            <span>${scoreB}</span>
+                            <span>${displayScoreB}</span>
                         </div>
                         <div class="team">
                             <span class="flag">${teamBInfo.flag}</span>
