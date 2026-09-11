@@ -155,7 +155,7 @@
     </div>
 
     <script>
-        // All mappings cleanly targeting your local repository files directly
+        // Maps your local .svg filenames to their specific side-bar brand accent colors
         const teamAssets = {
             "chinese taipei": { flag: '<img src="./taipei.svg" alt="TPE">', color: "#2d68c4" },
             "taip": { flag: '<img src="./taipei.svg" alt="TPE">', color: "#2d68c4" },
@@ -183,7 +183,7 @@
         };
 
         function getTeamData(rawTeamName) {
-            if (!rawTeamName) return { flag: "🏳️", color: "#64748b" };
+            if (!rawTeamName) return { flag: '<img src="./taipei.svg" alt="TPE">', color: "#64748b" };
             const cleaned = String(rawTeamName).toLowerCase().replace(/[\s\u00A0]+/g, ' ').trim();
             
             for (const key in teamAssets) {
@@ -191,7 +191,8 @@
                     return teamAssets[key];
                 }
             }
-            return { flag: "🏳️", color: "#64748b" };
+            // Defaults safely back to Chinese Taipei if country string matching fails
+            return { flag: '<img src="./taipei.svg" alt="TPE">', color: "#64748b" };
         }
 
         function handleScores(matches) {
@@ -204,13 +205,14 @@
             }
 
             matches.forEach(match => {
+                // Safeguards against reading empty data rows inside your sheet template
                 if (!match.Team_A || !match.Team_B) return;
 
                 const card = document.createElement('div');
                 card.className = 'match-card';
                 
                 const teamAInfo = getTeamData(match.Team_A);
-                const teamBInfo = getTeamData(match.Team_Data || match.Team_B);
+                const teamBInfo = getTeamData(match.Team_B);
 
                 card.style.setProperty('--team-a-color', teamAInfo.color);
                 card.style.setProperty('--team-b-color', teamBInfo.color);
@@ -218,7 +220,6 @@
                 const quarter = (match.Quarter || "UPCOMING").toUpperCase();
                 const time = match.Time_Remaining || "--:--";
                 
-                // ✅ FIXED: Repaired broken lookup conditional syntax cutoff bugs
                 const displayScoreA = (match.Score_A !== undefined && match.Score_A !== "") ? match.Score_A : "0";
                 const displayScoreB = (match.Score_B !== undefined && match.Score_B !== "") ? match.Score_B : "0";
 
@@ -252,7 +253,7 @@
                             <span>${displayScoreB}</span>
                         </div>
                         <div class="team">
-                            <span class="flag">${teamBInfo.flag}</span>
+                            <div class="flag">${teamBInfo.flag}</div>
                             <div class="team-name">${match.Team_B}</div>
                         </div>
                     </div>
@@ -260,18 +261,6 @@
                 container.appendChild(card);
             });
         }
-
-        function refreshData() {
-            const oldScript = document.getElementById('jsonp-trigger');
-            if (oldScript) oldScript.remove();
-
-            const script = document.createElement('script');
-            script.src = API_URL + "&ts=" + new Date().getTime(); 
-            script.id = 'jsonp-trigger';
-            document.body.appendChild(script);
-        }
-
-        refreshData();setInterval(refreshData, 5000);
-                            </script>
-</body>
+    </script>
+    </body>
 </html>
